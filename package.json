@@ -27,14 +27,13 @@
     "serverless"
   ],
   "dependencies": {
-    "@microlink/mql": "~0.8.2"
+    "@microlink/mql": "~0.9.1"
   },
   "devDependencies": {
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
     "ava": "latest",
     "conventional-github-releaser": "latest",
-    "coveralls": "latest",
     "finepack": "latest",
     "git-authors-cli": "latest",
     "git-dirty": "latest",
@@ -42,6 +41,7 @@
     "lint-staged": "latest",
     "npm-check-updates": "latest",
     "nyc": "latest",
+    "pinst": "latest",
     "prettier-standard": "latest",
     "standard": "latest",
     "standard-markdown": "latest",
@@ -56,10 +56,11 @@
   "scripts": {
     "clean": "rm -rf node_modules",
     "contributors": "(git-authors-cli && finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "lint": "standard-markdown README.md && standard",
     "postinstall": "husky install",
+    "postpublish": "pinst --enable",
     "postrelease": "npm run release:tags && npm run release:github && npm publish",
+    "prepublishOnly": "pinst --disable",
     "prerelease": "git-dirty && npm run update:check && npm test && npm run contributors",
     "pretest": "npm run lint",
     "release": "git-authors-cli finepack && git add package.json && standard-version -a",

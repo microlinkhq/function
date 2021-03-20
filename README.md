@@ -19,9 +19,8 @@ const microlinkFunction = require('@microlink/function')
 
 const fn = microlinkFunction(({ page }) => page.title())
 
-const result = await fn('https://google.com')
+fn('https://google.com').then(result => console.log(result))
 
-console.log(result)
 // {
 //   isFulfilled: true,
 //   isRejected: false,
@@ -36,9 +35,8 @@ const microlinkFunction = require('@microlink/function')
 
 const fn = microlinkFunction(({ page }) => response.status())
 
-const result = await fn('https://google.com')
+fn('https://google.com').then(result => console.log(result))
 
-console.log(result)
 // {
 //   isFulfilled: true,
 //   isRejected: false,
@@ -53,9 +51,8 @@ const microlinkFunction = require('@microlink/function')
 
 const fn = microlinkFunction(({ query }) => query.greetings)
 
-const result = await fn('https://google.com', { greetings: 'hello world' })
+fn('https://google.com', { greetings: 'hello world' }).then(result => console.log(result))
 
-console.log(result)
 // {
 //   isFulfilled: true,
 //   isRejected: false,

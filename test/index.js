@@ -7,9 +7,7 @@ const microlinkFunction = require('..')
 test('interact with the page', async t => {
   const getTitle = ({ page }) => page.title()
 
-  const myFn = microlinkFunction(getTitle, {
-    endpoint: 'https://next.microlink.io'
-  })
+  const myFn = microlinkFunction(getTitle)
 
   const result = await myFn('https://google.com')
 
@@ -23,9 +21,7 @@ test('interact with the page', async t => {
 test('interact with the response', async t => {
   const getTitle = ({ response }) => response.status()
 
-  const myFn = microlinkFunction(getTitle, {
-    endpoint: 'https://next.microlink.io'
-  })
+  const myFn = microlinkFunction(getTitle)
 
   const result = await myFn('https://google.com')
 
@@ -39,9 +35,7 @@ test('interact with the response', async t => {
 test('interact with the query', async t => {
   const getTitle = ({ query }) => query.greetings
 
-  const myFn = microlinkFunction(getTitle, {
-    endpoint: 'https://next.microlink.io'
-  })
+  const myFn = microlinkFunction(getTitle)
 
   const result = await myFn('https://google.com', { greetings: 'hello world' })
 

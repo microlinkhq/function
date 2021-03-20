@@ -2,8 +2,8 @@
 
 const mql = require('@microlink/mql')
 
-module.exports = (code, mqlOpts, gotOpts) => async (url, opts) => {
-  const { data } = await mql(
+module.exports = (code, mqlOpts, gotOpts) => (url, opts) =>
+  mql(
     url,
     {
       function: code.toString(),
@@ -12,7 +12,4 @@ module.exports = (code, mqlOpts, gotOpts) => async (url, opts) => {
       ...opts
     },
     gotOpts
-  )
-
-  return data.function
-}
+  ).then(({ data }) => data.function)
