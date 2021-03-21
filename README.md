@@ -1,28 +1,44 @@
 <div align="center">
-  <img src="https://i.imgur.com/1TiZk37.png" width="700px">
+  <img src="https://cdn.microlink.io/logo/banner.png">
+  <p style="max-width: 400px;"><b>Microlink Function</b> allows you to run JavaScript Serverless functions with <a target="_blank" href="https://browserless.js.org">Headless Chromium</a> access.</p>
 </div>
 
-**Microlink Function** runs remote JavaScript functions, with no compromises.
-
-It has been designed for zero user friction: just write the function, and Microlink will do the rest.
-
-Every time you run a **Microlink Function**, the code function will be compiled and ran in a safe V8 sandbox.
-
-During the function execution, you own the request lifecycle. This means you can require a safe list of common NPM packages, and also you can interact with a built-in [browserless](https://browserless.js.org) instance associated with the request. Every request is unique and not shared between others.
-
-Nothing to deploy or maintain. Just write and execute old fashioned functions.
+<div align="center">
+  <img src="https://i.imgur.com/4PWrzx2.png" width="700px">
+</div>
 
 ## Highlights
 
-- Run remote Javascript functions.
-- Require most common NPM packages.
-- Remote browser access in the same request cycle.
+- Starts from $0/mo.
+- Run Serverless Javascript functions.
+- Safe code isolation with NPM package support.
+- Headless Chromium browser access in the same request cycle.
 - No servers to maintain, no hidden cost or infrastructure complexity.
+
+## How it works
+
+Every time you call a **Microlink Function**, the code function will be compiled and executed remotely in a safe V8 sandbox.
+
+It's pretty similar to AWS Lambda, but rather than bundle your code, all the code will be executed remotely, giving the result of the execution back to you.
+
+**Microlink Function** can be invoked in frontend or backend side. There is nothing to deploy or hidden infrastructure cost associated.
 
 ## Install
 
+### from NPM
+
+It's available as [npm package](https://www.npmjs.com/package/@microlink/function):
+
 ```bash
 $ npm install @microlink/function --save
+```
+
+### from CDN
+
+Load directly in the browser from your favorite CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@microlink/function/dist/microlink-function.min.js"></script>
 ```
 
 ## Usage
@@ -73,6 +89,22 @@ fn('https://google.com', { greetings: 'hello world' }).then(result => console.lo
 //   isRejected: false,
 //   value: 'hello world'
 // }
+```
+
+## Pricing
+
+**Microlink Function** has been designed to be cheap and affordable.
+
+The first 50 [uncached](https://microlink.io/blog/edge-cdn/) requests of every day are **free**. If you need more, you should to buy a [pro plan](https://microlink.io/#pricing).
+
+For [authenticating](https://microlink.io/docs/api/basics/authentication) your requests, you should to provide your API key:
+
+```js
+const microlink = require('@microlink/function')
+
+const fn = microlink(({ query }) => query.greetings, {
+  apiKey: process.env.MICROLINK_API_KEY
+})
 ```
 
 ## API
