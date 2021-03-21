@@ -27,11 +27,14 @@
     "serverless"
   ],
   "dependencies": {
-    "@microlink/mql": "~0.9.1"
+    "@microlink/mql": "~0.9.3"
   },
   "devDependencies": {
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
+    "@rollup/plugin-commonjs": "latest",
+    "@rollup/plugin-node-resolve": "latest",
+    "@rollup/plugin-replace": "latest",
     "ava": "latest",
     "conventional-github-releaser": "latest",
     "finepack": "latest",
@@ -43,6 +46,11 @@
     "nyc": "latest",
     "pinst": "latest",
     "prettier-standard": "latest",
+    "rollup": "latest",
+    "rollup-plugin-filesize": "latest",
+    "rollup-plugin-shim": "latest",
+    "rollup-plugin-terser": "latest",
+    "rollup-plugin-visualizer": "latest",
     "standard": "latest",
     "standard-markdown": "latest",
     "standard-version": "latest"
@@ -51,22 +59,25 @@
     "node": ">= 12"
   },
   "files": [
+    "dist",
     "src"
   ],
   "scripts": {
+    "build": "rollup -c rollup.config.js",
     "clean": "rm -rf node_modules",
-    "contributors": "(git-authors-cli && finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
-    "lint": "standard-markdown README.md && standard",
+    "dev": "npm run build -- -w",
+    "lint": "standard",
     "postinstall": "husky install",
     "postpublish": "pinst --enable",
-    "postrelease": "npm run release:tags && npm run release:github && npm publish",
+    "postrelease": "npm run release:build && npm run release:tags && npm run release:github && (ci-publish || npm publish --access=public)",
     "prepublishOnly": "pinst --disable",
-    "prerelease": "git-dirty && npm run update:check && npm test && npm run contributors",
+    "prerelease": "git-dirty && npm run update:check && npm test",
     "pretest": "npm run lint",
-    "release": "git-authors-cli finepack && git add package.json && standard-version -a",
+    "release": "git-authors-cli && git add package.json && standard-version -a",
+    "release:build": "npm run build && git add dist/ && git commit -m \"build(no-release): generate bundle\"",
     "release:github": "conventional-github-releaser -p angular",
     "release:tags": "git push --follow-tags origin master",
-    "test": "nyc ava",
+    "test": "nyc ava --verbose",
     "update": "ncu -u",
     "update:check": "ncu -- --error-level 2"
   },
@@ -86,5 +97,12 @@
     "*.md": [
       "standard-markdown"
     ]
-  }
+  },
+  "standard": {
+    "ignore": [
+      "dist"
+    ]
+  },
+  "umd:main": "dist/microlink-function.js",
+  "unpkg": "dist/microlink-function.js"
 }

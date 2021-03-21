@@ -2,7 +2,7 @@
 
 const mql = require('@microlink/mql')
 
-module.exports = (code, mqlOpts, gotOpts) => (url, opts) =>
+const microlink = (code, mqlOpts, gotOpts) => (url, opts) =>
   mql(
     url,
     {
@@ -13,3 +13,8 @@ module.exports = (code, mqlOpts, gotOpts) => (url, opts) =>
     },
     gotOpts
   ).then(({ data }) => data.function)
+
+microlink.version = '__VERSION__'
+microlink.mql = mql
+
+module.exports = microlink

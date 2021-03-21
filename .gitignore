@@ -34,3 +34,5 @@ coverage
 ############################
 .env
 .envrc
+stats.html
+examples
