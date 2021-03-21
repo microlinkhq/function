@@ -1134,7 +1134,7 @@
       gotOpts
     ).then(({ data }) => data.function)
 
-  microlink.version = '0.0.0'
+  microlink.version = '0.0.1'
   microlink.mql = browser
 
   var src = microlink
