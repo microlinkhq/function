@@ -2,7 +2,7 @@
   "name": "@microlink/function",
   "description": "JavaScript runtime functions made simple.",
   "homepage": "https://nicedoc.io/microlink/microlink-function",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "src/index.js",
   "author": {
     "email": "josefrancisco.verdu@gmail.com",
