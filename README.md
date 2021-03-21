@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://i.imgur.com/1TiZk37.png">
+  <img src="https://i.imgur.com/1TiZk37.png" width="700px">
 </div>
 
 **Microlink Function** runs remote JavaScript functions, with no compromises.
