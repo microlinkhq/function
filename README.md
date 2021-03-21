@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://cdn.microlink.io/logo/banner.png"">
+  <img src="https://i.imgur.com/1TiZk37.png">
 </div>
 
 **Microlink Function** runs remote JavaScript functions, with no compromises.
