@@ -2,7 +2,22 @@
   <img src="https://cdn.microlink.io/logo/banner.png"">
 </div>
 
-> JavaScript runtime functions made simple.
+**Microlink Function** runs remote JavaScript functions, with no compromises.
+
+It has been designed for zero user friction: just write the function, and Microlink will do the rest.
+
+Every time you run a **Microlink Function**, the code function will be compiled and ran in the V8 sandbox.
+
+During the function execution, you own the request lifecycle. This means you can require a safe list of common NPM packages, and also you can interact with a built-in [browserless](https://browserless.js.org) instance associated with the request. Every request is unique and not shared between others.
+
+Nothing to deploy or maintain. Just write and execute old fashioned functions.
+
+## Highlights
+
+- Run remote Javascript functions.
+- Require most common NPM packages.
+- Remote browser access in the same request cycle.
+- No servers to maintain, no hidden cost or infrastructure complexity.
 
 ## Install
 
@@ -15,9 +30,9 @@ $ npm install @microlink/function --save
 ### Interact with the page
 
 ```js
-const microlinkFunction = require('@microlink/function')
+const microlink = require('@microlink/function')
 
-const fn = microlinkFunction(({ page }) => page.title())
+const fn = microlink(({ page }) => page.title())
 
 fn('https://google.com').then(result => console.log(result))
 
@@ -31,9 +46,9 @@ fn('https://google.com').then(result => console.log(result))
 ### Interact with the response
 
 ```js
-const microlinkFunction = require('@microlink/function')
+const microlink = require('@microlink/function')
 
-const fn = microlinkFunction(({ page }) => response.status())
+const fn = microlink(({ page }) => response.status())
 
 fn('https://google.com').then(result => console.log(result))
 
@@ -47,9 +62,9 @@ fn('https://google.com').then(result => console.log(result))
 ### Interact with the query
 
 ```js
-const microlinkFunction = require('@microlink/function')
+const microlink = require('@microlink/function')
 
-const fn = microlinkFunction(({ query }) => query.greetings)
+const fn = microlink(({ query }) => query.greetings)
 
 fn('https://google.com', { greetings: 'hello world' }).then(result => console.log(result))
 
@@ -62,12 +77,12 @@ fn('https://google.com', { greetings: 'hello world' }).then(result => console.lo
 
 ## API
 
-### microlinkFunction(fn, [mqlOpts], [gotoOpts])
+### microlink(fn, [mqlOpts], [gotoOpts])
 
 #### fn
 
 *Required*<br>
-Type: `string`
+Type: `function`
 
 The function that be executed inside Microlink API browser.
 

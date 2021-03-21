@@ -76,9 +76,13 @@
     console.log(`Microlink Function v${microlink.version} at ${getBrowser()}`)
 
     const url = 'https://example.com'
-    const code = ({ page }) => page.title()
 
-    console.debug(`const getTitle = microlink(${code.toString()})\n\nfn(${url})`)
+const code = async ({ page }) => {
+  const { words } = require('lodash')
+  return words(await page.title())
+}
+
+    console.debug(`const fn = microlink(${code.toString()})\n\nfn(${url})`)
 
     microlink(code)('https://example.com').then(value => {
       console.log(JSON.stringify(value, null, 2))
