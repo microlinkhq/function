@@ -6,7 +6,7 @@
 
 It has been designed for zero user friction: just write the function, and Microlink will do the rest.
 
-Every time you run a **Microlink Function**, the code function will be compiled and ran in the V8 sandbox.
+Every time you run a **Microlink Function**, the code function will be compiled and ran in a safe V8 sandbox.
 
 During the function execution, you own the request lifecycle. This means you can require a safe list of common NPM packages, and also you can interact with a built-in [browserless](https://browserless.js.org) instance associated with the request. Every request is unique and not shared between others.
 
