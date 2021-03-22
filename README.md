@@ -15,6 +15,21 @@
 - Headless Chromium browser access in the same request cycle.
 - No servers to maintain, no hidden cost or infrastructure complexity.
 
+## Contents
+
+- [How it works](#how-it-works)
+- [Installation](#installation)
+  * [from NPM](#from-npm)
+  * [from CDN](#from-cdn)
+- [Get Started](#get-started)
+  * [Input](#input)
+    + [Require NPM packages](#require-npm-packages)
+  * [Output](#output)
+- [Examples](#examples)
+- [Pricing](#pricing)
+- [API](#api)
+- [License](#license)
+
 ## How it works
 
 Every time you call a **Microlink Function**, the code function will be compiled and executed remotely in a safe V8 sandbox.
@@ -23,7 +38,7 @@ It's pretty similar to AWS Lambda, but rather than bundle your code, all the cod
 
 **Microlink Function** can be invoked in frontend or backend side. There is nothing to deploy or hidden infrastructure cost associated.
 
-## Install
+## Installation
 
 ### from NPM
 
@@ -41,55 +56,94 @@ Load directly in the browser from your favorite CDN:
 <script src="https://cdn.jsdelivr.net/npm/@microlink/function/dist/microlink-function.min.js"></script>
 ```
 
-## Usage
+## Get Started
 
-### Interact with the page
+### Input
+
+Let say you have a JavaScript like this:
 
 ```js
-const microlink = require('@microlink/function')
-
-const fn = microlink(({ page }) => page.title())
-
-fn('https://google.com').then(result => console.log(result))
-
-// {
-//   isFulfilled: true,
-//   isRejected: false,
-//   value: 'Google'
-// }
+const ping = ({ query, response }) => query.statusCode
+  ? response.status()
+  : response.statusText()
 ```
 
-### Interact with the response
+To run the previous code as **Microlink Function**, all you need to do is wrap the function with the `microlink` decorator:
 
 ```js
 const microlink = require('@microlink/function')
 
-const fn = microlink(({ page }) => response.status())
+const ping = microlink({ query, response }) => query.statusCode
+  ? response.status()
+  : response.statusText()
+)
+```
 
-fn('https://google.com').then(result => console.log(result))
+Then, just call the function as you would normally:
+
+```js
+const result = await ping('https://example.com', { statusCode: true })
+
+console.log(result)
 
 // {
-//   isFulfilled: true,
+//   isFullfilled: true,
 //   isRejected: false,
 //   value: 200
 // }
 ```
 
-### Interact with the query
+When a function is wrapped by **Microlink Function** the function execution is done remotely, giving back the result.
+
+Any **Microlink Function** receives the following parameters:
+
+- `query`: The query parameter provided as second argument.
+- `page`: The [`puppeteer#page`](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#class-page) instance to interact with the headless browser.
+- `response`: The [`puppeteer#response`](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#class-httpresponse) as result of the implicit [`page.goto`](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagegotourl-options).
+
+#### Require NPM packages
+
+Additionally, you can require a allowed list of common NPM packages inside your code blocks:
 
 ```js
 const microlink = require('@microlink/function')
 
-const fn = microlink(({ query }) => query.greetings)
-
-fn('https://google.com', { greetings: 'hello world' }).then(result => console.log(result))
-
-// {
-//   isFulfilled: true,
-//   isRejected: false,
-//   value: 'hello world'
-// }
+const ping = microlink(({ query, response }) => {
+  const { result } = require('lodash')
+  const { statusCode } = query
+  return result(response, statusCode ? 'status' : 'statusText')
+})
 ```
+
+The list of allowed NPM packages are:
+
+- [`path`](https://nodejs.org/api/path.html)
+- [`url`](https://nodejs.org/api/url.html)
+- [`@aws-sdk/client-s3`](https://npm.im/@aws-sdk/client-s3)
+- [`@metascraper`](https://npm.im/@metascraper)
+- [`async`](https://npm.im/async)
+- [`browserless`](https://npm.im/browserless)
+- [`got`](https://npm.im/got)
+- [`ioredis`](https://npm.im/ioredis)
+- [`lodash`](https://npm.im/lodash)
+- [`metascraper`](https://npm.im/metascraper)
+- [`p-reflect`](https://npm.im/p-reflect)
+- [`p-retry`](https://npm.im/p-retry)
+- [`p-timeout`](https://npm.im/p-timeout)
+
+Do you miss any NPM modules there? open a [new issue](/issues/new) and we make it available.
+
+### Output
+
+When a **Microlink Function** is executed, the result response object has the following interface:
+
+- `isFulfilled`
+- `isRejected`
+- `value` or `reason`, depending on whether the promise fulfilled or rejected.
+
+## Examples
+
+Check [examples](/examples).
 
 ## Pricing
 
@@ -102,9 +156,13 @@ For [authenticating](https://microlink.io/docs/api/basics/authentication) your r
 ```js
 const microlink = require('@microlink/function')
 
-const fn = microlink(({ query }) => query.greetings, {
-  apiKey: process.env.MICROLINK_API_KEY
-})
+const code = ({ query, response }) => {
+  const { result } = require('lodash')
+  const { statusCode } = query
+  return result(response, statusCode ? 'status' : 'statusText')
+}
+
+const ping = microlink(code, { apiKey: process.env.MICROLINK_API_KEY })
 ```
 
 ## API
@@ -134,7 +192,7 @@ Any option passed here will bypass to [browserless#goto](https://browserless.js.
 
 ## License
 
-**microlink-function** © [](), released under the [MIT](https://github.com/microlink/microlink-function/blob/master/LICENSE.md) License.<br>
-Authored and maintained by []() with help from [contributors](https://github.com/microlink/microlink-function/contributors).
+**microlink-function** © [Microlink](https://microlink.io), released under the [MIT](https://github.com/microlink/microlink-function/blob/master/LICENSE.md) License.<br>
+Authored and maintained by [Kiko Beats](https://github.com/kikobeats) with help from [contributors](https://github.com/microlink/microlink-function/contributors).
 
-> []() · GitHub [](https://github.com/microlink) · Twitter [@microlink](https://twitter.com/microlink)
+> [microlink.io](https://microlink.io) · GitHub [@MicrolinkHQ](https://github.com/microlinkhq) · Twitter [@microlinkhq](https://twitter.com/microlinkhq)
