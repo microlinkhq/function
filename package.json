@@ -40,17 +40,16 @@
     "finepack": "latest",
     "git-authors-cli": "latest",
     "git-dirty": "latest",
-    "husky": "latest",
     "lint-staged": "latest",
     "npm-check-updates": "latest",
     "nyc": "latest",
-    "pinst": "latest",
     "prettier-standard": "latest",
     "rollup": "latest",
     "rollup-plugin-filesize": "latest",
     "rollup-plugin-shim": "latest",
     "rollup-plugin-terser": "latest",
     "rollup-plugin-visualizer": "latest",
+    "simple-git-hooks": "latest",
     "standard": "latest",
     "standard-markdown": "latest",
     "standard-version": "latest"
@@ -67,10 +66,7 @@
     "clean": "rm -rf node_modules",
     "dev": "npm run build -- -w",
     "lint": "standard",
-    "postinstall": "husky install",
-    "postpublish": "pinst --enable",
     "postrelease": "npm run release:build && npm run release:tags && npm run release:github && (ci-publish || npm publish --access=public)",
-    "prepublishOnly": "pinst --disable",
     "prerelease": "git-dirty && npm run update:check && npm test",
     "pretest": "npm run lint",
     "release": "git-authors-cli && git add package.json && standard-version -a",
@@ -97,6 +93,10 @@
     "*.md": [
       "standard-markdown"
     ]
+  },
+  "simple-git-hooks": {
+    "commit-msg": "npx commitlint --edit",
+    "pre-commit": "npx lint-staged"
   },
   "standard": {
     "ignore": [
