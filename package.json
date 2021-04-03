@@ -83,9 +83,9 @@
   "license": "MIT",
   "ava": {
     "files": [
+      "test/**/*",
       "!test/browser-globals.js",
-      "!test/clients.js",
-      "test/**/*"
+      "!test/clients.js"
     ],
     "timeout": "1m"
   },
