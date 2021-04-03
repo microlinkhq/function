@@ -3,7 +3,7 @@
   "description": "JavaScript runtime functions made simple.",
   "homepage": "https://nicedoc.io/microlink/microlink-function",
   "version": "0.0.1",
-  "main": "src/index.js",
+  "main": "src/node.js",
   "author": {
     "email": "josefrancisco.verdu@gmail.com",
     "name": "Kiko Beats",

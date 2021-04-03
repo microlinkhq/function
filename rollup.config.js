@@ -38,5 +38,5 @@ const build = ({ format, exports, input } = {}) => {
 
 export default build({
   format: 'umd',
-  input: './src/index.js'
+  input: './src/browser.js'
 })
