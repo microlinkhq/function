@@ -15,6 +15,34 @@
 
   var require$$0__default = /*#__PURE__*/ _interopDefaultLegacy(require$$0)
 
+  const factory$1 = ({ mql, VERSION, toCompress }) => {
+    const microlink = (code, mqlOpts, gotOpts) => {
+      const compress = toCompress(code)
+
+      return async (url, opts) => {
+        const { data } = await mql(
+          url,
+          {
+            function: await compress,
+            meta: false,
+            ...mqlOpts,
+            ...opts
+          },
+          gotOpts
+        )
+
+        return data.function
+      }
+    }
+
+    microlink.version = VERSION
+    microlink.mql = mql
+
+    return microlink
+  }
+
+  var factory_1$1 = factory$1
+
   var commonjsGlobal =
     typeof globalThis !== 'undefined'
       ? globalThis
@@ -1113,7 +1141,7 @@
     }
   }
 
-  var browser = factory_1({
+  var browser$1 = factory_1({
     MicrolinkError,
     isUrlHttp: lightweight,
     stringify,
@@ -1122,23 +1150,12 @@
     VERSION: '0.9.3'
   })
 
-  const microlink = (code, mqlOpts, gotOpts) => (url, opts) =>
-    browser(
-      url,
-      {
-        function: code.toString(),
-        meta: false,
-        ...mqlOpts,
-        ...opts
-      },
-      gotOpts
-    ).then(({ data }) => data.function)
+  var browser = factory_1$1({
+    mql: browser$1,
+    toCompress: code => code.toString(),
+    VERSION: '0.1.0'
+  })
 
-  microlink.version = '0.0.1'
-  microlink.mql = browser
-
-  var src = microlink
-
-  return src
+  return browser
 })
 //# sourceMappingURL=microlink-function.js.map
