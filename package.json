@@ -36,12 +36,14 @@
     "@rollup/plugin-commonjs": "latest",
     "@rollup/plugin-node-resolve": "latest",
     "@rollup/plugin-replace": "latest",
+    "abort-controller": "latest",
     "ava": "latest",
     "conventional-github-releaser": "latest",
     "finepack": "latest",
     "git-authors-cli": "latest",
     "git-dirty": "latest",
     "lint-staged": "latest",
+    "node-fetch": "latest",
     "npm-check-updates": "latest",
     "nyc": "latest",
     "prettier-standard": "latest",
@@ -79,6 +81,14 @@
     "update:check": "ncu -- --error-level 2"
   },
   "license": "MIT",
+  "ava": {
+    "files": [
+      "!test/browser-globals.js",
+      "!test/clients.js",
+      "test/**/*"
+    ],
+    "timeout": "1m"
+  },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
@@ -86,7 +96,7 @@
   },
   "lint-staged": {
     "package.json": [
-      "finepack"
+      "finepack --sort-ignore-object-at ava"
     ],
     "*.js": [
       "prettier-standard"
