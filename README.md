@@ -1,6 +1,6 @@
 <div align="center">
   <img src="https://cdn.microlink.io/logo/banner.png">
-  <p style="max-width: 400px;"><b>Microlink Function</b> allows you to run JavaScript Serverless functions with <a target="_blank" href="https://browserless.js.org">Headless Chromium</a> access.</p>
+  <p style="max-width: 400px;"><b>Microlink Function</b> allows you to run JavaScript Serverless functions with <a target="_blank" href="https://browserless.js.org">Headless Chromium</a> programmatic access.</p>
 </div>
 
 <div align="center">
