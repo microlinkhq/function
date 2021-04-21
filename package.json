@@ -14,39 +14,79 @@
   "bugs": {
     "url": "https://github.com/microlinkhq/function/issues"
   },
+  "keywords": [
+    "browserless",
+    "chrome",
+    "chromium",
+    "function",
+    "microlink",
+    "playwright",
+    "puppeteer",
+    "serverless"
+  ],
+  "dependencies": {
+    "@microlink/mql": "~0.9.3",
+    "base64-url": "~2.3.3"
+  },
   "devDependencies": {
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
+    "@rollup/plugin-commonjs": "latest",
+    "@rollup/plugin-node-resolve": "latest",
+    "@rollup/plugin-replace": "latest",
+    "abort-controller": "latest",
+    "ava": "latest",
+    "conventional-github-releaser": "latest",
     "finepack": "latest",
     "git-authors-cli": "latest",
-    "lerna": "latest",
+    "git-dirty": "latest",
     "lint-staged": "latest",
+    "node-fetch": "latest",
     "npm-check-updates": "latest",
     "nyc": "latest",
     "prettier-standard": "latest",
+    "rollup": "latest",
+    "rollup-plugin-filesize": "latest",
+    "rollup-plugin-shim": "latest",
+    "rollup-plugin-terser": "latest",
+    "rollup-plugin-visualizer": "latest",
     "simple-git-hooks": "latest",
     "standard": "latest",
-    "standard-markdown": "latest"
+    "standard-markdown": "latest",
+    "standard-version": "latest"
   },
   "engines": {
     "node": ">= 12"
   },
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
-    "build": "lerna run build",
-    "clean": "lerna clean --yes && rm -rf node_modules",
-    "contributors": "(lerna exec finepack --parallel && git-authors-cli && finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
-    "coverage": "lerna exec npm run coverage --parallel",
-    "install": "lerna bootstrap --force-local --no-ci",
-    "lint": "standard-markdown README.md && lerna exec npm run lint",
-    "prerelease": "npm run update:check && npm run contributors",
+    "build": "rollup -c rollup.config.js",
+    "clean": "rm -rf node_modules",
+    "dev": "npm run build -- -w",
+    "lint": "standard",
+    "postrelease": "npm run release:build && npm run release:tags && npm run release:github && (ci-publish || npm publish --access=public)",
+    "prerelease": "git-dirty && npm run update:check && npm test",
     "pretest": "npm run lint",
-    "release": "lerna publish --yes --sort --conventional-commits -m \"chore(release): %s\" --create-release github",
-    "test": "lerna exec npm run test",
-    "update": "lerna exec ncu -- -u",
-    "update:check": "ncu -- --errorLevel 2"
+    "release": "git-authors-cli && git add package.json && standard-version -a",
+    "release:build": "npm run build && git add dist/ && git commit -m \"build(no-release): generate bundle\"",
+    "release:github": "conventional-github-releaser -p angular",
+    "release:tags": "git push --follow-tags origin master",
+    "test": "nyc ava --verbose",
+    "update": "ncu -u",
+    "update:check": "ncu -- --error-level 2"
   },
-  "private": true,
   "license": "MIT",
+  "ava": {
+    "files": [
+      "test/**/*",
+      "!test/browser-globals.js",
+      "!test/clients.js"
+    ],
+    "timeout": "1m"
+  },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
@@ -56,8 +96,11 @@
     "*.js": [
       "prettier-standard"
     ],
+    "*.md": [
+      "standard-markdown"
+    ],
     "package.json": [
-      "finepack"
+      "finepack --sort-ignore-object-at ava"
     ]
   },
   "simple-git-hooks": {
@@ -66,7 +109,9 @@
   },
   "standard": {
     "ignore": [
-      "packages/function/dist"
+      "dist"
     ]
-  }
+  },
+  "umd:main": "dist/microlink-function.js",
+  "unpkg": "dist/microlink-function.js"
 }
