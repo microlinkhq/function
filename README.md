@@ -10,8 +10,8 @@
 ## Highlights
 
 - Starts from $0/mo.
-- Run Serverless Javascript functions.
-- Safe code isolation with NPM package support.
+- Run Serverless Javascript functions (also [locally](https://github.com/microlinkhq/local)).
+- Ability to require to require any of the [allowed](#npm-packages) NPM packages.
 - Headless Chromium browser access in the same request cycle.
 - No servers to maintain, no hidden cost or infrastructure complexity.
 
@@ -23,7 +23,7 @@
   * [from CDN](#from-cdn)
 - [Get Started](#get-started)
   * [Input](#input)
-    + [Require NPM packages](#require-npm-packages)
+    + [NPM packages](#npm-packages)
   * [Output](#output)
 - [Examples](#examples)
 - [Pricing](#pricing)
@@ -101,7 +101,7 @@ Any **Microlink Function** receives the following parameters:
 - `page`: The [`puppeteer#page`](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#class-page) instance to interact with the headless browser.
 - `response`: The [`puppeteer#response`](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#class-httpresponse) as result of the implicit [`page.goto`](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagegotourl-options).
 
-#### Require NPM packages
+#### NPM packages
 
 Additionally, you can require a allowed list of common NPM packages inside your code blocks:
 
@@ -142,6 +142,10 @@ When a **Microlink Function** is executed, the result response object has the fo
 - `isFulfilled`
 - `isRejected`
 - `value` or `reason`, depending on whether the promise fulfilled or rejected.
+
+## Testing
+
+Check [`@microlink/local`](https://github.com/microlinkhq/local) for executing your Microlink Functions locally.
 
 ## Examples
 
