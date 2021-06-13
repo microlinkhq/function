@@ -1,10 +1,12 @@
 {
-  "name": "function",
+  "name": "@microlink/function",
   "homepage": "https://github.com/microlinkhq/function#readme",
-  "version": "",
+  "version": "0.1.0",
+  "main": "src/node.js",
+  "browser": "src/browser.js",
   "author": {
-    "email": "josefrancisco.verdu@gmail.com",
     "name": "Kiko Beats",
+    "email": "josefrancisco.verdu@gmail.com",
     "url": "https://kikobeats.com"
   },
   "repository": {
