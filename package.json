@@ -43,7 +43,7 @@
     "git-authors-cli": "latest",
     "git-dirty": "latest",
     "lint-staged": "latest",
-    "node-fetch": "latest",
+    "node-fetch": "2",
     "npm-check-updates": "latest",
     "nyc": "latest",
     "prettier-standard": "latest",
