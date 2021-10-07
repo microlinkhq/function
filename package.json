@@ -1,7 +1,7 @@
 {
   "name": "@microlink/function",
   "homepage": "https://github.com/microlinkhq/function#readme",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "src/node.js",
   "browser": "src/browser.js",
   "author": {
