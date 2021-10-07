@@ -27,7 +27,7 @@
     "serverless"
   ],
   "dependencies": {
-    "@microlink/mql": "~0.9.3",
+    "@microlink/mql": "~0.10.0",
     "base64-url": "~2.3.3"
   },
   "devDependencies": {
