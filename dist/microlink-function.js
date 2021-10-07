@@ -5,43 +5,15 @@
     ? define(['url'], factory)
     : ((global =
         typeof globalThis !== 'undefined' ? globalThis : global || self),
-      (global.microlink = factory(global.require$$0)))
-})(this, function (require$$0) {
+      (global.microlink = factory(global.require$$0$1)))
+})(this, function (require$$0$1) {
   'use strict'
 
   function _interopDefaultLegacy (e) {
     return e && typeof e === 'object' && 'default' in e ? e : { default: e }
   }
 
-  var require$$0__default = /*#__PURE__*/ _interopDefaultLegacy(require$$0)
-
-  const factory$1 = ({ mql, VERSION, toCompress }) => {
-    const microlink = (code, mqlOpts, gotOpts) => {
-      const compress = toCompress(code)
-
-      return async (url, opts) => {
-        const { data } = await mql(
-          url,
-          {
-            function: await compress,
-            meta: false,
-            ...mqlOpts,
-            ...opts
-          },
-          gotOpts
-        )
-
-        return data.function
-      }
-    }
-
-    microlink.version = VERSION
-    microlink.mql = mql
-
-    return microlink
-  }
-
-  var factory_1$1 = factory$1
+  var require$$0__default = /*#__PURE__*/ _interopDefaultLegacy(require$$0$1)
 
   var commonjsGlobal =
     typeof globalThis !== 'undefined'
@@ -75,10 +47,33 @@
     return a
   }
 
-  function createCommonjsModule (fn) {
-    var module = { exports: {} }
-    return fn(module, module.exports), module.exports
+  const factory$2 = ({ mql, VERSION, toCompress }) => {
+    const microlink = (code, mqlOpts, gotOpts) => {
+      const compress = toCompress(code)
+
+      return async (url, opts) => {
+        const { data } = await mql(
+          url,
+          {
+            function: await compress,
+            meta: false,
+            ...mqlOpts,
+            ...opts
+          },
+          gotOpts
+        )
+
+        return data.function
+      }
+    }
+
+    microlink.version = VERSION
+    microlink.mql = mql
+
+    return microlink
   }
+
+  var factory_1$1 = factory$2
 
   const URL$1 = commonjsGlobal.window
     ? window.URL
@@ -92,6 +87,8 @@
       return false
     }
   }
+
+  var dist = {}
 
   function iter (output, nullish, sep, val, key) {
     var k,
@@ -120,11 +117,7 @@
     return output
   }
 
-  var flattie_1 = flattie
-
-  var dist = {
-    flattie: flattie_1
-  }
+  dist.flattie = flattie
 
   function encode (obj, pfx) {
     var k,
@@ -182,7 +175,11 @@
     decode: decode
   })
 
-  var ky = createCommonjsModule(function (module, exports) {
+  var require$$2 = /*@__PURE__*/ getAugmentedNamespace(qss_m)
+
+  var ky$1 = { exports: {} }
+
+  ;(function (module, exports) {
     ;(function (global, factory) {
       module.exports = factory()
     })(commonjsGlobal, function () {
@@ -735,7 +732,9 @@
 
       return ky
     })
-  })
+  })(ky$1)
+
+  var lib = { exports: {} }
 
   var _nodeResolve_empty = {}
 
@@ -744,13 +743,15 @@
     default: _nodeResolve_empty
   })
 
-  var os = /*@__PURE__*/ getAugmentedNamespace(_nodeResolve_empty$1)
+  var require$$0 = /*@__PURE__*/ getAugmentedNamespace(_nodeResolve_empty$1)
+
+  const os = require$$0
 
   const extractPathRegex = /\s+at.*(?:\(|\s)(.*)\)?/
   const pathRegex = /^(?:(?:(?:node|(?:internal\/[\w/]*|.*node_modules\/(?:babel-polyfill|pirates)\/.*)?\w+)\.js:\d+:\d+)|native)/
   const homeDir = typeof os.homedir === 'undefined' ? '' : os.homedir()
 
-  var cleanStack = (stack, options) => {
+  var cleanStack$1 = (stack, options) => {
     options = Object.assign({ pretty: false }, options)
 
     return stack
@@ -856,7 +857,7 @@
     })
   }
 
-  const mimicFn = (to, from, { ignoreNonConfigurable = false } = {}) => {
+  const mimicFn$2 = (to, from, { ignoreNonConfigurable = false } = {}) => {
     const { name } = to
 
     for (const property of Reflect.ownKeys(from)) {
@@ -869,7 +870,7 @@
     return to
   }
 
-  var mimicFn_1 = mimicFn
+  var mimicFn_1 = mimicFn$2
 
   var helpers = {
     isFunction: obj => typeof obj === 'function',
@@ -902,11 +903,15 @@
       : error.description
   }
 
-  var addErrorProps = interfaceObject
+  var addErrorProps$1 = interfaceObject
 
+  const cleanStack = cleanStack$1
+  const mimicFn$1 = mimicFn_1
+
+  const addErrorProps = addErrorProps$1
   const { isString } = helpers
 
-  function createExtendError (ErrorClass, classProps) {
+  function createExtendError$1 (ErrorClass, classProps) {
     function ExtendError (props) {
       const error = new ErrorClass()
       const errorProps = isString(props) ? { message: props } : props
@@ -917,18 +922,19 @@
     }
 
     ExtendError.prototype = ErrorClass.prototype
-    mimicFn_1(ExtendError, ErrorClass)
+    mimicFn$1(ExtendError, ErrorClass)
 
     return ExtendError
   }
 
-  var createExtendError_1 = createExtendError
+  var createExtendError_1 = createExtendError$1
 
   const { inherits } = helpers
+  const mimicFn = mimicFn_1
 
   const REGEX_CLASS_NAME = /[^0-9a-zA-Z_$]/
 
-  function createError (className) {
+  function createError$1 (className) {
     if (typeof className !== 'string') {
       throw new TypeError('Expected className to be a string')
     }
@@ -948,30 +954,27 @@
     }
 
     inherits(ErrorClass, Error)
-    mimicFn_1(ErrorClass, Error)
+    mimicFn(ErrorClass, Error)
     return ErrorClass
   }
 
-  var createError_1 = createError
+  var createError_1 = createError$1
+
+  const createExtendError = createExtendError_1
+  const createError = createError_1
 
   const createErrorClass = ErrorClass => (className, props) => {
-    const errorClass = createError_1(className || ErrorClass.name)
-    return createExtendError_1(errorClass, props)
+    const errorClass = createError(className || ErrorClass.name)
+    return createExtendError(errorClass, props)
   }
 
-  var lib = createErrorClass(Error)
-  var type = createErrorClass(TypeError)
-  var range = createErrorClass(RangeError)
-  var _eval = createErrorClass(EvalError)
-  var syntax = createErrorClass(SyntaxError)
-  var reference = createErrorClass(ReferenceError)
-  var uri = createErrorClass(URIError)
-  lib.type = type
-  lib.range = range
-  lib.eval = _eval
-  lib.syntax = syntax
-  lib.reference = reference
-  lib.uri = uri
+  lib.exports = createErrorClass(Error)
+  lib.exports.type = createErrorClass(TypeError)
+  lib.exports.range = createErrorClass(RangeError)
+  lib.exports.eval = createErrorClass(EvalError)
+  lib.exports.syntax = createErrorClass(SyntaxError)
+  lib.exports.reference = createErrorClass(ReferenceError)
+  lib.exports.uri = createErrorClass(URIError)
 
   const ENDPOINT = {
     FREE: 'https://api.microlink.io',
@@ -1002,7 +1005,7 @@
     }
   }
 
-  const factory = ({
+  const factory$1 = ({
     VERSION,
     MicrolinkError,
     isUrlHttp,
@@ -1104,14 +1107,17 @@
     return mql
   }
 
-  var factory_1 = factory
+  var factory_1 = factory$1
 
-  var require$$1 = /*@__PURE__*/ getAugmentedNamespace(qss_m)
-
+  const isUrlHttp = lightweight
   const { flattie: flatten } = dist
-  const { encode: stringify } = require$$1
+  const { encode: stringify } = require$$2
+  const ky = ky$1.exports
+  const whoops = lib.exports
 
-  const MicrolinkError = lib('MicrolinkError')
+  const factory = factory_1
+
+  const MicrolinkError = whoops('MicrolinkError')
 
   const got = async (url, opts) => {
     try {
@@ -1141,9 +1147,9 @@
     }
   }
 
-  var browser$1 = factory_1({
+  var browser$1 = factory({
     MicrolinkError,
-    isUrlHttp: lightweight,
+    isUrlHttp,
     stringify,
     got,
     flatten,
@@ -1153,7 +1159,7 @@
   var browser = factory_1$1({
     mql: browser$1,
     toCompress: code => code.toString(),
-    VERSION: '0.1.0'
+    VERSION: '0.1.1'
   })
 
   return browser
