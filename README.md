@@ -127,6 +127,7 @@ The list of allowed NPM packages are:
 - [`@mozilla/readability`](https://npm.im/@mozilla/readability)
 - [`async`](https://npm.im/async)
 - [`cheerio`](https://npm.im/cheerio)
+- [`extract-email-address`](https://npm.im/extract-email-address)
 - [`got`](https://npm.im/got)
 - [`ioredis`](https://npm.im/ioredis)
 - [`jsdom`](https://npm.im/jsdom)
