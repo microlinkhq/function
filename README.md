@@ -100,6 +100,7 @@ When a function is wrapped by **Microlink Function** the function execution is d
 
 Any **Microlink Function** receives the following parameters:
 
+- `html`: When [meta](https://microlink.io/docs/api/parameters/meta) is enabled, the HTML markup of the website is provided.
 - `query`: The query parameter provided as second argument.
 - `page`: The [`puppeteer#page`](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#class-page) instance to interact with the headless browser.
 - `response`: The [`puppeteer#response`](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#class-httpresponse) as result of the implicit [`page.goto`](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagegotourl-options).
