@@ -1,8 +1,8 @@
 'use strict'
 
-const mql = require('@microlink/mql')
 const { escape } = require('base64-url')
 const { promisify } = require('util')
+const mql = require('@microlink/mql')
 const zlib = require('zlib')
 
 const brotliCompress = promisify(zlib.brotliCompress)
