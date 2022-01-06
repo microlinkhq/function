@@ -84,7 +84,7 @@ const code = async ({ page }) => {
   return words(await page.title())
 }
 
-    console.debug(`const fn = microlink(${code.toString()})\n\nfn(${url})`)
+    console.debug(`const fn = microlink(${code.toString()})\n\nfn('${url}')`)
 
     microlink(code)('https://example.com').then(value => {
       console.log(JSON.stringify(value, null, 2))
