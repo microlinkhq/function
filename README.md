@@ -12,7 +12,7 @@
 
 ## Highlights
 
-- Starts from $0/mo.
+- Starts from \$0/mo.
 - Run Serverless Javascript functions (also [locally](https://github.com/microlinkhq/local)).
 - Ability to require to require any of the [allowed](#npm-packages) NPM packages.
 - Headless Chromium browser access in the same request cycle.
@@ -22,12 +22,12 @@
 
 - [How it works](#how-it-works)
 - [Installation](#installation)
-  * [from NPM](#from-npm)
-  * [from CDN](#from-cdn)
+  - [from NPM](#from-npm)
+  - [from CDN](#from-cdn)
 - [Get Started](#get-started)
-  * [Input](#input)
-    + [NPM packages](#npm-packages)
-  * [Output](#output)
+  - [Input](#input)
+    - [NPM packages](#npm-packages)
+  - [Output](#output)
 - [Examples](#examples)
 - [Pricing](#pricing)
 - [API](#api)
@@ -66,9 +66,8 @@ Load directly in the browser from your favorite CDN:
 Let say you have a JavaScript like this:
 
 ```js
-const ping = ({ query, response }) => query.statusCode
-  ? response.status()
-  : response.statusText()
+const ping = ({ statusCode, response }) =>
+  statusCode ? response.status() : response.statusText()
 ```
 
 To run the previous code as **Microlink Function**, all you need to do is wrap the function with the `microlink` decorator:
@@ -76,7 +75,7 @@ To run the previous code as **Microlink Function**, all you need to do is wrap t
 ```js
 const microlink = require('@microlink/function')
 
-const ping = microlink({ query, response }) => query.statusCode
+const ping = microlink({ response }) => statusCode
   ? response.status()
   : response.statusText()
 )
@@ -98,10 +97,9 @@ console.log(result)
 
 When a function is wrapped by **Microlink Function** the function execution is done remotely, giving back the result.
 
-Any **Microlink Function** receives the following parameters:
+Any **Microlink Function** will receive the following parameters:
 
 - `html`: When [meta](https://microlink.io/docs/api/parameters/meta) is enabled, the HTML markup of the website is provided.
-- `query`: The query parameter provided as second argument.
 - `page`: The [`puppeteer#page`](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#class-page) instance to interact with the headless browser.
 - `response`: The [`puppeteer#response`](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#class-httpresponse) as result of the implicit [`page.goto`](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#pagegotourl-options).
 
@@ -112,9 +110,8 @@ Additionally, you can require a allowed list of common NPM packages inside your 
 ```js
 const microlink = require('@microlink/function')
 
-const ping = microlink(({ query, response }) => {
+const ping = microlink(({ statusCode, response }) => {
   const { result } = require('lodash')
-  const { statusCode } = query
   return result(response, statusCode ? 'status' : 'statusText')
 })
 ```
@@ -167,9 +164,8 @@ For [authenticating](https://microlink.io/docs/api/basics/authentication) your r
 ```js
 const microlink = require('@microlink/function')
 
-const code = ({ query, response }) => {
+const code = ({ statusCode, response }) => {
   const { result } = require('lodash')
-  const { statusCode } = query
   return result(response, statusCode ? 'status' : 'statusText')
 }
 
@@ -182,7 +178,7 @@ const ping = microlink(code, { apiKey: process.env.MICROLINK_API_KEY })
 
 #### fn
 
-*Required*<br>
+_Required_<br>
 Type: `function`
 
 The function that be executed inside Microlink API browser.

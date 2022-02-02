@@ -2,9 +2,8 @@
 
 const microlink = require('..')
 
-const ping = microlink(({ query, response }) => {
+const ping = microlink(({ statusCode, response }) => {
   const { result } = require('lodash')
-  const { statusCode } = query
   return result(response, statusCode ? 'status' : 'statusText')
 })
 

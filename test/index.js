@@ -33,8 +33,8 @@ clients.forEach(({ constructor: microlink, target }) => {
     })
   })
 
-  test(`${target} » interact with the query`, async t => {
-    const getTitle = ({ query }) => query.greetings
+  test(`${target} » interact with user specific parameters`, async t => {
+    const getTitle = ({ greetings }) => greetings
 
     const myFn = microlink(getTitle)
 
