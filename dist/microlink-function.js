@@ -177,6 +177,381 @@
 
   var require$$2 = /*@__PURE__*/ getAugmentedNamespace(qss_m)
 
+  var lib = { exports: {} }
+
+  var _nodeResolve_empty = {}
+
+  var _nodeResolve_empty$1 = /*#__PURE__*/ Object.freeze({
+    __proto__: null,
+    default: _nodeResolve_empty
+  })
+
+  var require$$0 = /*@__PURE__*/ getAugmentedNamespace(_nodeResolve_empty$1)
+
+  const os = require$$0
+
+  const extractPathRegex = /\s+at.*(?:\(|\s)(.*)\)?/
+  const pathRegex = /^(?:(?:(?:node|(?:internal\/[\w/]*|.*node_modules\/(?:babel-polyfill|pirates)\/.*)?\w+)\.js:\d+:\d+)|native)/
+  const homeDir = typeof os.homedir === 'undefined' ? '' : os.homedir()
+
+  var cleanStack$1 = (stack, options) => {
+    options = Object.assign({ pretty: false }, options)
+
+    return stack
+      .replace(/\\/g, '/')
+      .split('\n')
+      .filter(line => {
+        const pathMatches = line.match(extractPathRegex)
+        if (pathMatches === null || !pathMatches[1]) {
+          return true
+        }
+
+        const match = pathMatches[1]
+
+        // Electron
+        if (
+          match.includes('.app/Contents/Resources/electron.asar') ||
+          match.includes('.app/Contents/Resources/default_app.asar')
+        ) {
+          return false
+        }
+
+        return !pathRegex.test(match)
+      })
+      .filter(line => line.trim() !== '')
+      .map(line => {
+        if (options.pretty) {
+          return line.replace(extractPathRegex, (m, p1) =>
+            m.replace(p1, p1.replace(homeDir, '~'))
+          )
+        }
+
+        return line
+      })
+      .join('\n')
+  }
+
+  const copyProperty = (to, from, property, ignoreNonConfigurable) => {
+    // `Function#length` should reflect the parameters of `to` not `from` since we keep its body.
+    // `Function#prototype` is non-writable and non-configurable so can never be modified.
+    if (property === 'length' || property === 'prototype') {
+      return
+    }
+
+    const toDescriptor = Object.getOwnPropertyDescriptor(to, property)
+    const fromDescriptor = Object.getOwnPropertyDescriptor(from, property)
+
+    if (
+      !canCopyProperty(toDescriptor, fromDescriptor) &&
+      ignoreNonConfigurable
+    ) {
+      return
+    }
+
+    Object.defineProperty(to, property, fromDescriptor)
+  }
+
+  // `Object.defineProperty()` throws if the property exists, is not configurable and either:
+  //  - one its descriptors is changed
+  //  - it is non-writable and its value is changed
+  const canCopyProperty = function (toDescriptor, fromDescriptor) {
+    return (
+      toDescriptor === undefined ||
+      toDescriptor.configurable ||
+      (toDescriptor.writable === fromDescriptor.writable &&
+        toDescriptor.enumerable === fromDescriptor.enumerable &&
+        toDescriptor.configurable === fromDescriptor.configurable &&
+        (toDescriptor.writable || toDescriptor.value === fromDescriptor.value))
+    )
+  }
+
+  const changePrototype = (to, from) => {
+    const fromPrototype = Object.getPrototypeOf(from)
+    if (fromPrototype === Object.getPrototypeOf(to)) {
+      return
+    }
+
+    Object.setPrototypeOf(to, fromPrototype)
+  }
+
+  const wrappedToString = (withName, fromBody) =>
+    `/* Wrapped ${withName}*/\n${fromBody}`
+
+  const toStringDescriptor = Object.getOwnPropertyDescriptor(
+    Function.prototype,
+    'toString'
+  )
+  const toStringName = Object.getOwnPropertyDescriptor(
+    Function.prototype.toString,
+    'name'
+  )
+
+  // We call `from.toString()` early (not lazily) to ensure `from` can be garbage collected.
+  // We use `bind()` instead of a closure for the same reason.
+  // Calling `from.toString()` early also allows caching it in case `to.toString()` is called several times.
+  const changeToString = (to, from, name) => {
+    const withName = name === '' ? '' : `with ${name.trim()}() `
+    const newToString = wrappedToString.bind(null, withName, from.toString())
+    // Ensure `to.toString.toString` is non-enumerable and has the same `same`
+    Object.defineProperty(newToString, 'name', toStringName)
+    Object.defineProperty(to, 'toString', {
+      ...toStringDescriptor,
+      value: newToString
+    })
+  }
+
+  const mimicFn$2 = (to, from, { ignoreNonConfigurable = false } = {}) => {
+    const { name } = to
+
+    for (const property of Reflect.ownKeys(from)) {
+      copyProperty(to, from, property, ignoreNonConfigurable)
+    }
+
+    changePrototype(to, from)
+    changeToString(to, from, name)
+
+    return to
+  }
+
+  var mimicFn_1 = mimicFn$2
+
+  var helpers = {
+    isFunction: obj => typeof obj === 'function',
+    isString: obj => typeof obj === 'string',
+    composeErrorMessage: (code, description) => `${code}, ${description}`,
+    inherits: (ctor, superCtor) => {
+      ctor.super_ = superCtor
+      ctor.prototype = Object.create(superCtor.prototype, {
+        constructor: {
+          value: ctor,
+          enumerable: false,
+          writable: true,
+          configurable: true
+        }
+      })
+    }
+  }
+
+  const { isFunction, composeErrorMessage } = helpers
+
+  function interfaceObject (error, ...props) {
+    Object.assign(error, ...props)
+
+    error.description = isFunction(error.message)
+      ? error.message(error)
+      : error.message
+
+    error.message = error.code
+      ? composeErrorMessage(error.code, error.description)
+      : error.description
+  }
+
+  var addErrorProps$1 = interfaceObject
+
+  const cleanStack = cleanStack$1
+  const mimicFn$1 = mimicFn_1
+
+  const addErrorProps = addErrorProps$1
+  const { isString } = helpers
+
+  function createExtendError$1 (ErrorClass, classProps) {
+    function ExtendError (props) {
+      const error = new ErrorClass()
+      const errorProps = isString(props) ? { message: props } : props
+      addErrorProps(error, classProps, errorProps)
+
+      error.stack = cleanStack(error.stack)
+      return error
+    }
+
+    ExtendError.prototype = ErrorClass.prototype
+    mimicFn$1(ExtendError, ErrorClass)
+
+    return ExtendError
+  }
+
+  var createExtendError_1 = createExtendError$1
+
+  const { inherits } = helpers
+  const mimicFn = mimicFn_1
+
+  const REGEX_CLASS_NAME = /[^0-9a-zA-Z_$]/
+
+  function createError$1 (className) {
+    if (typeof className !== 'string') {
+      throw new TypeError('Expected className to be a string')
+    }
+
+    if (REGEX_CLASS_NAME.test(className)) {
+      throw new Error('className contains invalid characters')
+    }
+
+    function ErrorClass () {
+      Object.defineProperty(this, 'name', {
+        configurable: true,
+        value: className,
+        writable: true
+      })
+
+      Error.captureStackTrace(this, this.constructor)
+    }
+
+    inherits(ErrorClass, Error)
+    mimicFn(ErrorClass, Error)
+    return ErrorClass
+  }
+
+  var createError_1 = createError$1
+
+  const createExtendError = createExtendError_1
+  const createError = createError_1
+
+  const createErrorClass = ErrorClass => (className, props) => {
+    const errorClass = createError(className || ErrorClass.name)
+    return createExtendError(errorClass, props)
+  }
+
+  lib.exports = createErrorClass(Error)
+  lib.exports.type = createErrorClass(TypeError)
+  lib.exports.range = createErrorClass(RangeError)
+  lib.exports.eval = createErrorClass(EvalError)
+  lib.exports.syntax = createErrorClass(SyntaxError)
+  lib.exports.reference = createErrorClass(ReferenceError)
+  lib.exports.uri = createErrorClass(URIError)
+
+  const ENDPOINT = {
+    FREE: 'https://api.microlink.io',
+    PRO: 'https://pro.microlink.io'
+  }
+
+  const isObject = input => input !== null && typeof input === 'object'
+
+  const parseBody = (input, error, url) => {
+    try {
+      return JSON.parse(input)
+    } catch (_) {
+      const message = input || error.message
+
+      return {
+        status: 'error',
+        data: { url: message },
+        more: 'https://microlink.io/efatalclient',
+        code: 'EFATALCLIENT',
+        message,
+        url
+      }
+    }
+  }
+
+  const factory$1 = ({
+    VERSION,
+    MicrolinkError,
+    isUrlHttp,
+    stringify,
+    got,
+    flatten
+  }) => {
+    const assertUrl = (url = '') => {
+      if (!isUrlHttp(url)) {
+        const message = `The \`url\` as \`${url}\` is not valid. Ensure it has protocol (http or https) and hostname.`
+        throw new MicrolinkError({
+          status: 'fail',
+          data: { url: message },
+          more: 'https://microlink.io/docs/api/api-parameters/url',
+          code: 'EINVALURLCLIENT',
+          message,
+          url
+        })
+      }
+    }
+
+    const mapRules = rules => {
+      if (!isObject(rules)) return
+      const flatRules = flatten(rules)
+      return Object.keys(flatRules).reduce(
+        (acc, key) => ({ ...acc, [`data.${key}`]: flatRules[key].toString() }),
+        {}
+      )
+    }
+
+    const fetchFromApi = async (apiUrl, opts = {}, retryCount = 0) => {
+      try {
+        const response = await got(apiUrl, opts)
+        return opts.responseType === 'buffer'
+          ? { body: response.body, response }
+          : { ...response.body, response }
+      } catch (err) {
+        const { response = {} } = err
+        const {
+          statusCode,
+          body: rawBody,
+          headers,
+          url: uri = apiUrl
+        } = response
+        const isBuffer = Buffer.isBuffer(rawBody)
+
+        const body =
+          isObject(rawBody) && !isBuffer
+            ? rawBody
+            : parseBody(isBuffer ? rawBody.toString() : rawBody, err, uri)
+
+        if (body.code === 'EFATALCLIENT' && retryCount++ < 2) {
+          return fetchFromApi(apiUrl, opts, retryCount)
+        }
+
+        throw MicrolinkError({
+          ...body,
+          message: body.message,
+          url: uri,
+          statusCode,
+          headers
+        })
+      }
+    }
+
+    const getApiUrl = (
+      url,
+      { data, apiKey, endpoint, retry, cache, ...opts } = {},
+      { responseType = 'json', headers: gotHeaders, ...gotOpts } = {}
+    ) => {
+      const isPro = !!apiKey
+      const apiEndpoint = endpoint || ENDPOINT[isPro ? 'PRO' : 'FREE']
+
+      const apiUrl = `${apiEndpoint}?${stringify({
+        url,
+        ...mapRules(data),
+        ...flatten(opts)
+      })}`
+
+      const headers = isPro
+        ? { ...gotHeaders, 'x-api-key': apiKey }
+        : { ...gotHeaders }
+      return [apiUrl, { ...gotOpts, responseType, cache, retry, headers }]
+    }
+
+    const createMql = defaultOpts => async (url, opts, gotOpts) => {
+      assertUrl(url)
+      const [apiUrl, fetchOpts] = getApiUrl(url, opts, {
+        ...defaultOpts,
+        ...gotOpts
+      })
+      return fetchFromApi(apiUrl, fetchOpts)
+    }
+
+    const mql = createMql()
+    mql.MicrolinkError = MicrolinkError
+    mql.getApiUrl = getApiUrl
+    mql.fetchFromApi = fetchFromApi
+    mql.mapRules = mapRules
+    mql.version = VERSION
+    mql.stream = got.stream
+    mql.buffer = createMql({ responseType: 'buffer' })
+
+    return mql
+  }
+
+  var factory_1 = factory$1
+
   var ky$1 = { exports: {} }
 
   ;(function (module, exports) {
@@ -734,388 +1109,13 @@
     })
   })(ky$1)
 
-  var lib = { exports: {} }
-
-  var _nodeResolve_empty = {}
-
-  var _nodeResolve_empty$1 = /*#__PURE__*/ Object.freeze({
-    __proto__: null,
-    default: _nodeResolve_empty
-  })
-
-  var require$$0 = /*@__PURE__*/ getAugmentedNamespace(_nodeResolve_empty$1)
-
-  const os = require$$0
-
-  const extractPathRegex = /\s+at.*(?:\(|\s)(.*)\)?/
-  const pathRegex = /^(?:(?:(?:node|(?:internal\/[\w/]*|.*node_modules\/(?:babel-polyfill|pirates)\/.*)?\w+)\.js:\d+:\d+)|native)/
-  const homeDir = typeof os.homedir === 'undefined' ? '' : os.homedir()
-
-  var cleanStack$1 = (stack, options) => {
-    options = Object.assign({ pretty: false }, options)
-
-    return stack
-      .replace(/\\/g, '/')
-      .split('\n')
-      .filter(line => {
-        const pathMatches = line.match(extractPathRegex)
-        if (pathMatches === null || !pathMatches[1]) {
-          return true
-        }
-
-        const match = pathMatches[1]
-
-        // Electron
-        if (
-          match.includes('.app/Contents/Resources/electron.asar') ||
-          match.includes('.app/Contents/Resources/default_app.asar')
-        ) {
-          return false
-        }
-
-        return !pathRegex.test(match)
-      })
-      .filter(line => line.trim() !== '')
-      .map(line => {
-        if (options.pretty) {
-          return line.replace(extractPathRegex, (m, p1) =>
-            m.replace(p1, p1.replace(homeDir, '~'))
-          )
-        }
-
-        return line
-      })
-      .join('\n')
-  }
-
-  const copyProperty = (to, from, property, ignoreNonConfigurable) => {
-    // `Function#length` should reflect the parameters of `to` not `from` since we keep its body.
-    // `Function#prototype` is non-writable and non-configurable so can never be modified.
-    if (property === 'length' || property === 'prototype') {
-      return
-    }
-
-    const toDescriptor = Object.getOwnPropertyDescriptor(to, property)
-    const fromDescriptor = Object.getOwnPropertyDescriptor(from, property)
-
-    if (
-      !canCopyProperty(toDescriptor, fromDescriptor) &&
-      ignoreNonConfigurable
-    ) {
-      return
-    }
-
-    Object.defineProperty(to, property, fromDescriptor)
-  }
-
-  // `Object.defineProperty()` throws if the property exists, is not configurable and either:
-  //  - one its descriptors is changed
-  //  - it is non-writable and its value is changed
-  const canCopyProperty = function (toDescriptor, fromDescriptor) {
-    return (
-      toDescriptor === undefined ||
-      toDescriptor.configurable ||
-      (toDescriptor.writable === fromDescriptor.writable &&
-        toDescriptor.enumerable === fromDescriptor.enumerable &&
-        toDescriptor.configurable === fromDescriptor.configurable &&
-        (toDescriptor.writable || toDescriptor.value === fromDescriptor.value))
-    )
-  }
-
-  const changePrototype = (to, from) => {
-    const fromPrototype = Object.getPrototypeOf(from)
-    if (fromPrototype === Object.getPrototypeOf(to)) {
-      return
-    }
-
-    Object.setPrototypeOf(to, fromPrototype)
-  }
-
-  const wrappedToString = (withName, fromBody) =>
-    `/* Wrapped ${withName}*/\n${fromBody}`
-
-  const toStringDescriptor = Object.getOwnPropertyDescriptor(
-    Function.prototype,
-    'toString'
-  )
-  const toStringName = Object.getOwnPropertyDescriptor(
-    Function.prototype.toString,
-    'name'
-  )
-
-  // We call `from.toString()` early (not lazily) to ensure `from` can be garbage collected.
-  // We use `bind()` instead of a closure for the same reason.
-  // Calling `from.toString()` early also allows caching it in case `to.toString()` is called several times.
-  const changeToString = (to, from, name) => {
-    const withName = name === '' ? '' : `with ${name.trim()}() `
-    const newToString = wrappedToString.bind(null, withName, from.toString())
-    // Ensure `to.toString.toString` is non-enumerable and has the same `same`
-    Object.defineProperty(newToString, 'name', toStringName)
-    Object.defineProperty(to, 'toString', {
-      ...toStringDescriptor,
-      value: newToString
-    })
-  }
-
-  const mimicFn$2 = (to, from, { ignoreNonConfigurable = false } = {}) => {
-    const { name } = to
-
-    for (const property of Reflect.ownKeys(from)) {
-      copyProperty(to, from, property, ignoreNonConfigurable)
-    }
-
-    changePrototype(to, from)
-    changeToString(to, from, name)
-
-    return to
-  }
-
-  var mimicFn_1 = mimicFn$2
-
-  var helpers = {
-    isFunction: obj => typeof obj === 'function',
-    isString: obj => typeof obj === 'string',
-    composeErrorMessage: (code, description) => `${code}, ${description}`,
-    inherits: (ctor, superCtor) => {
-      ctor.super_ = superCtor
-      ctor.prototype = Object.create(superCtor.prototype, {
-        constructor: {
-          value: ctor,
-          enumerable: false,
-          writable: true,
-          configurable: true
-        }
-      })
-    }
-  }
-
-  const { isFunction, composeErrorMessage } = helpers
-
-  function interfaceObject (error, ...props) {
-    Object.assign(error, ...props)
-
-    error.description = isFunction(error.message)
-      ? error.message(error)
-      : error.message
-
-    error.message = error.code
-      ? composeErrorMessage(error.code, error.description)
-      : error.description
-  }
-
-  var addErrorProps$1 = interfaceObject
-
-  const cleanStack = cleanStack$1
-  const mimicFn$1 = mimicFn_1
-
-  const addErrorProps = addErrorProps$1
-  const { isString } = helpers
-
-  function createExtendError$1 (ErrorClass, classProps) {
-    function ExtendError (props) {
-      const error = new ErrorClass()
-      const errorProps = isString(props) ? { message: props } : props
-      addErrorProps(error, classProps, errorProps)
-
-      error.stack = cleanStack(error.stack)
-      return error
-    }
-
-    ExtendError.prototype = ErrorClass.prototype
-    mimicFn$1(ExtendError, ErrorClass)
-
-    return ExtendError
-  }
-
-  var createExtendError_1 = createExtendError$1
-
-  const { inherits } = helpers
-  const mimicFn = mimicFn_1
-
-  const REGEX_CLASS_NAME = /[^0-9a-zA-Z_$]/
-
-  function createError$1 (className) {
-    if (typeof className !== 'string') {
-      throw new TypeError('Expected className to be a string')
-    }
-
-    if (REGEX_CLASS_NAME.test(className)) {
-      throw new Error('className contains invalid characters')
-    }
-
-    function ErrorClass () {
-      Object.defineProperty(this, 'name', {
-        configurable: true,
-        value: className,
-        writable: true
-      })
-
-      Error.captureStackTrace(this, this.constructor)
-    }
-
-    inherits(ErrorClass, Error)
-    mimicFn(ErrorClass, Error)
-    return ErrorClass
-  }
-
-  var createError_1 = createError$1
-
-  const createExtendError = createExtendError_1
-  const createError = createError_1
-
-  const createErrorClass = ErrorClass => (className, props) => {
-    const errorClass = createError(className || ErrorClass.name)
-    return createExtendError(errorClass, props)
-  }
-
-  lib.exports = createErrorClass(Error)
-  lib.exports.type = createErrorClass(TypeError)
-  lib.exports.range = createErrorClass(RangeError)
-  lib.exports.eval = createErrorClass(EvalError)
-  lib.exports.syntax = createErrorClass(SyntaxError)
-  lib.exports.reference = createErrorClass(ReferenceError)
-  lib.exports.uri = createErrorClass(URIError)
-
-  const ENDPOINT = {
-    FREE: 'https://api.microlink.io',
-    PRO: 'https://pro.microlink.io'
-  }
-
-  const isObject = input => typeof input === 'object'
-
-  const pickBy = obj => {
-    Object.keys(obj).forEach(key => obj[key] == null && delete obj[key])
-    return obj
-  }
-
-  const parseBody = (input, error, url) => {
-    try {
-      return JSON.parse(input)
-    } catch (_) {
-      const message = input || error.message
-
-      return {
-        status: 'error',
-        data: { url: message },
-        more: 'https://microlink.io/efatal',
-        code: 'EFATAL',
-        message,
-        url
-      }
-    }
-  }
-
-  const factory$1 = ({
-    VERSION,
-    MicrolinkError,
-    isUrlHttp,
-    stringify,
-    got,
-    flatten
-  }) => {
-    const assertUrl = (url = '') => {
-      if (!isUrlHttp(url)) {
-        const message = `The \`url\` as \`${url}\` is not valid. Ensure it has protocol (http or https) and hostname.`
-        throw new MicrolinkError({
-          status: 'fail',
-          data: { url: message },
-          more: 'https://microlink.io/docs/api/api-parameters/url',
-          code: 'EINVALURLCLIENT',
-          message,
-          url
-        })
-      }
-    }
-
-    const mapRules = rules => {
-      if (!isObject(rules)) return
-      const flatRules = flatten(rules)
-      return Object.keys(flatRules).reduce(
-        (acc, key) => ({ ...acc, [`data.${key}`]: flatRules[key] }),
-        {}
-      )
-    }
-
-    const fetchFromApi = async (apiUrl, opts = {}) => {
-      try {
-        const response = await got(apiUrl, opts)
-        return opts.responseType === 'buffer'
-          ? { body: response.body, response }
-          : { ...response.body, response }
-      } catch (err) {
-        const { response = {} } = err
-        const {
-          statusCode,
-          body: rawBody,
-          headers,
-          url: uri = apiUrl
-        } = response
-
-        const body =
-          isObject(rawBody) && !Buffer.isBuffer(rawBody)
-            ? rawBody
-            : parseBody(rawBody, err, uri)
-
-        throw MicrolinkError({
-          ...body,
-          message: body.message,
-          url: uri,
-          statusCode,
-          headers
-        })
-      }
-    }
-
-    const getApiUrl = (
-      url,
-      { data, apiKey, endpoint, retry, cache, ...opts } = {},
-      { responseType = 'json', headers: gotHeaders, ...gotOpts } = {}
-    ) => {
-      const isPro = !!apiKey
-      const apiEndpoint = endpoint || ENDPOINT[isPro ? 'PRO' : 'FREE']
-
-      const apiUrl = `${apiEndpoint}?${stringify({
-        url,
-        ...mapRules(data),
-        ...flatten(pickBy(opts))
-      })}`
-
-      const headers = isPro
-        ? { ...gotHeaders, 'x-api-key': apiKey }
-        : { ...gotHeaders }
-      return [apiUrl, { ...gotOpts, responseType, cache, retry, headers }]
-    }
-
-    const createMql = defaultOpts => async (url, opts, gotOpts) => {
-      assertUrl(url)
-      const [apiUrl, fetchOpts] = getApiUrl(url, opts, {
-        ...defaultOpts,
-        ...gotOpts
-      })
-      return fetchFromApi(apiUrl, fetchOpts)
-    }
-
-    const mql = createMql()
-    mql.MicrolinkError = MicrolinkError
-    mql.getApiUrl = getApiUrl
-    mql.fetchFromApi = fetchFromApi
-    mql.mapRules = mapRules
-    mql.version = VERSION
-    mql.stream = got.stream
-    mql.buffer = createMql({ responseType: 'buffer' })
-
-    return mql
-  }
-
-  var factory_1 = factory$1
-
   const isUrlHttp = lightweight
   const { flattie: flatten } = dist
   const { encode: stringify } = require$$2
-  const ky = ky$1.exports
   const whoops = lib.exports
 
   const factory = factory_1
+  const ky = ky$1.exports
 
   const MicrolinkError = whoops('MicrolinkError')
 
@@ -1153,13 +1153,13 @@
     stringify,
     got,
     flatten,
-    VERSION: '0.9.3'
+    VERSION: '0.10.13'
   })
 
   var browser = factory_1$1({
     mql: browser$1,
     toCompress: code => code.toString(),
-    VERSION: '0.1.1'
+    VERSION: '0.1.2'
   })
 
   return browser
