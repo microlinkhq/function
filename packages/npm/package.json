@@ -1,0 +1,72 @@
+{
+  "name": "@microlink/function",
+  "homepage": "https://github.com/microlinkhq/function#readme",
+  "version": "0.1.2",
+  "main": "src/node.js",
+  "browser": "src/browser.js",
+  "author": {
+    "name": "Kiko Beats",
+    "email": "josefrancisco.verdu@gmail.com",
+    "url": "https://kikobeats.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microlinkhq/function.git"
+  },
+  "bugs": {
+    "url": "https://github.com/microlinkhq/function/issues"
+  },
+  "keywords": [
+    "browserless",
+    "chrome",
+    "chromium",
+    "function",
+    "microlink",
+    "playwright",
+    "puppeteer",
+    "serverless"
+  ],
+  "dependencies": {
+    "@microlink/mql": "~0.10.0",
+    "base64-url": "~2.3.3"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "latest",
+    "@rollup/plugin-node-resolve": "latest",
+    "@rollup/plugin-replace": "latest",
+    "abort-controller": "latest",
+    "ava": "latest",
+    "conventional-github-releaser": "latest",
+    "node-fetch": "2",
+    "npm-check-updates": "latest",
+    "nyc": "latest",
+    "rollup": "latest",
+    "rollup-plugin-filesize": "latest",
+    "rollup-plugin-shim": "latest",
+    "rollup-plugin-terser": "latest",
+    "rollup-plugin-visualizer": "latest"
+  },
+  "engines": {
+    "node": ">= 12"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "rollup -c rollup.config.js",
+    "dev": "npm run build -- -w",
+    "test": "nyc ava --verbose"
+  },
+  "license": "MIT",
+  "ava": {
+    "files": [
+      "test/**/*",
+      "!test/browser-globals.js",
+      "!test/clients.js"
+    ],
+    "timeout": "1m"
+  },
+  "umd:main": "dist/microlink-function.js",
+  "unpkg": "dist/microlink-function.js"
+}

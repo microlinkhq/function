@@ -75,9 +75,8 @@ To run the previous code as **Microlink Function**, all you need to do is wrap t
 ```js
 const microlink = require('@microlink/function')
 
-const ping = microlink({ response }) => statusCode
-  ? response.status()
-  : response.statusText()
+const ping = microlink(({ response }) =>
+  statusCode ? response.status() : response.statusText()
 )
 ```
 
