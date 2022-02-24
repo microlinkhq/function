@@ -8,6 +8,12 @@
     "name": "microlink.io",
     "url": "https://microlink.io"
   },
+  "contributors": [
+    {
+      "name": "Kiko Beats",
+      "email": "josefrancisco.verdu@gmail.com"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/microlinkhq/functions.git"
@@ -35,9 +41,9 @@
     "lerna": "latest",
     "nano-staged": "latest",
     "npm-check-updates": "latest",
-    "standard": "latest",
     "prettier-standard": "latest",
     "simple-git-hooks": "latest",
+    "standard": "latest",
     "standard-version": "latest"
   },
   "engines": {
@@ -46,10 +52,10 @@
   "scripts": {
     "clean": "pnpm -r exec -- rm -rf node_modules",
     "clean:build": "pnpm -r exec -- rm -rf dist",
-    "contributors": "(pnpm -r exec finepack --parallel && git-authors-cli && finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
+    "contributors": "(git-authors-cli && finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
     "lint": "standard",
     "prebuild": "npm run clean:build",
-    "prerelease": "npm run update:check && npm run contributors && npm run build",
+    "prerelease": "npm run update:check && npm run contributors",
     "pretest": "npm run lint",
     "release": "lerna publish --yes --sort --conventional-commits -m \"chore(release): %s\" --create-release github",
     "test": "pnpm -r run test",
@@ -71,13 +77,13 @@
       "finepack"
     ]
   },
+  "simple-git-hooks": {
+    "commit-msg": "npx commitlint --edit",
+    "pre-commit": "npx nano-staged"
+  },
   "standard": {
     "ignore": [
       "packages/npm/dist"
     ]
-  },
-  "simple-git-hooks": {
-    "commit-msg": "npx commitlint --edit",
-    "pre-commit": "npx nano-staged"
   }
 }
