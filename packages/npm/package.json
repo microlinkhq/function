@@ -55,7 +55,7 @@
   ],
   "scripts": {
     "build": "rollup -c rollup.config.js",
-    "preversion": "pnpm run build",
+    "postversion": "pnpm run build",
     "dev": "npm run build -- -w",
     "test": "nyc ava --verbose"
   },
