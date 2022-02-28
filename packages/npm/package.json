@@ -1,6 +1,7 @@
 {
   "name": "@microlink/function",
   "homepage": "https://github.com/microlinkhq/function#readme",
+  "url": "https://function.microlink.io",
   "version": "0.1.6",
   "main": "src/node.js",
   "browser": "src/browser.js",
@@ -10,6 +11,7 @@
     "url": "https://kikobeats.com"
   },
   "repository": {
+    "directory": "packages/npm",
     "type": "git",
     "url": "git+https://github.com/microlinkhq/function.git"
   },
@@ -39,7 +41,7 @@
     "conventional-github-releaser": "latest",
     "node-fetch": "2",
     "npm-check-updates": "latest",
-    "nyc": "latest",
+    "c8": "latest",
     "rollup": "latest",
     "rollup-plugin-filesize": "latest",
     "rollup-plugin-shim": "latest",
@@ -57,7 +59,7 @@
     "build": "rollup -c rollup.config.js",
     "postversion": "pnpm run build",
     "dev": "npm run build -- -w",
-    "test": "nyc ava --verbose"
+    "test": "c8 ava --verbose"
   },
   "license": "MIT",
   "ava": {
