@@ -39,7 +39,7 @@
     "abort-controller": "latest",
     "ava": "latest",
     "conventional-github-releaser": "latest",
-    "node-fetch": "2",
+    "node-fetch": "3",
     "npm-check-updates": "latest",
     "c8": "latest",
     "rollup": "latest",
