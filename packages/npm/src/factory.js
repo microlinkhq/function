@@ -20,8 +20,9 @@ const factory = ({ mql, VERSION, toCompress }) => {
     }
   }
 
-  microlink.version = VERSION
   microlink.mql = mql
+  microlink.render = mql.render
+  microlink.version = VERSION
 
   return microlink
 }
