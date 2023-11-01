@@ -12,8 +12,28 @@ const toCompress = code =>
     data => `br#${escape(data.toString('base64'))}`
   )
 
-module.exports = require('./factory')({
-  mql,
-  toCompress,
-  VERSION: require('../package.json').version
-})
+
+const fn = (code, mqlOpts, gotOpts) => {
+  const compress = toCompress(code)
+
+  return async (url, opts) => {
+    const { data } = await mql(
+      url,
+      {
+        function: await compress,
+        meta: false,
+        ...mqlOpts,
+        ...opts
+      },
+      gotOpts
+    )
+
+    return data.function
+  }
+}
+
+fn.mql = mql
+fn.render = mql.render
+fn.version = require('../package.json').version
+
+module.exports = fn

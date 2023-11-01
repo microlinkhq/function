@@ -1,42 +1,51 @@
 import nodeResolve from '@rollup/plugin-node-resolve'
-import visualizer from 'rollup-plugin-visualizer'
+import { visualizer } from 'rollup-plugin-visualizer'
 import commonjs from '@rollup/plugin-commonjs'
-import replace from '@rollup/plugin-replace'
-import { terser } from 'rollup-plugin-terser'
 import filesize from 'rollup-plugin-filesize'
+import replace from '@rollup/plugin-replace'
+import terser from '@rollup/plugin-terser'
 
-const build = ({ format, exports, input } = {}) => {
-  const base = ({ file, compress = false }) => ({
+const build = ({ input, output, plugins = [], compress }) => {
+  return {
     input,
-    output: {
-      exports,
-      name: 'microlink',
-      format,
-      file,
-      sourcemap: true
-    },
+    output,
     plugins: [
-      nodeResolve({
-        mainFields: ['browser', 'module', 'main']
-      }),
       replace({
-        __VERSION__: require('./package.json').version,
-        __MQL_VERSION__: require('@microlink/mql').version
+        values: {
+          "require('../package.json').version": "'__MFN_VERSION__'",
+          __MFN_VERSION__: require('./package.json').version
+        }
       }),
-      commonjs(),
-      compress && terser(),
+      ...plugins,
+      compress &&
+        terser({
+          format: {
+            comments: false
+          }
+        }),
       filesize(),
       visualizer()
     ]
-  })
-
-  return [
-    base({ file: 'dist/microlink-function.js', compress: false }),
-    base({ file: 'dist/microlink-function.min.js', compress: true })
-  ]
+  }
 }
 
-export default build({
-  format: 'umd',
-  input: './src/browser.js'
-})
+const builds = [
+  /* This build is just for testing using ESM interface */
+  build({
+    input: './src/node.js',
+    output: { file: 'dist/node.mjs', format: 'es' },
+    plugins: [
+      commonjs()
+    ]
+  }),
+  build({
+    compress: true,
+    input: 'src/lightweight.mjs',
+    output: { file: 'lightweight/index.js', format: 'es' },
+    plugins: [
+      nodeResolve()
+    ]
+  })
+]
+
+export default builds
