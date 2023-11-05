@@ -16,8 +16,7 @@ test('cjs', async t => {
 
 test('esm', async t => {
   // eslint-disable-next-line no-template-curly-in-string
-  const code =
-    "import f from '@microlink/function'; console.log(`ƒ v${f.version}`)"
+  const code = "import f from '@microlink/function'; console.log(`ƒ v${f.version}`)"
   const { stdout } = await evalScript.esm(code)
   t.is(stdout, `ƒ v${pkg.version}`)
 })

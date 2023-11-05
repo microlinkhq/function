@@ -12,7 +12,6 @@ const toCompress = code =>
     data => `br#${escape(data.toString('base64'))}`
   )
 
-
 const fn = (code, mqlOpts, gotOpts) => {
   const compress = toCompress(code)
 

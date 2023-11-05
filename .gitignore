@@ -35,4 +35,6 @@ coverage
 .env
 .envrc
 stats.html
-packages/npm/dist
+src/node.mjs
+lightweight/index.js
+lightweight/index-bundled.d.ts

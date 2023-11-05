@@ -33,18 +33,14 @@ const builds = [
   /* This build is just for testing using ESM interface */
   build({
     input: './src/node.js',
-    output: { file: 'dist/node.mjs', format: 'es' },
-    plugins: [
-      commonjs()
-    ]
+    output: { file: 'src/node.mjs', format: 'es' },
+    plugins: [commonjs()]
   }),
   build({
     compress: true,
     input: 'src/lightweight.mjs',
     output: { file: 'lightweight/index.js', format: 'es' },
-    plugins: [
-      nodeResolve()
-    ]
+    plugins: [nodeResolve()]
   })
 ]
 
