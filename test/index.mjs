@@ -1,8 +1,8 @@
 'use strict'
 
-const test = require('ava')
+import test from 'ava'
 
-const clients = require('./clients')
+import clients from './clients.mjs'
 
 clients.forEach(({ constructor: microlink, target }) => {
   test(`${target} » interact with the page`, async t => {

@@ -57,8 +57,9 @@
       debug: writeLog('samp')
     }
   </script>
-  <script src="./dist/microlink-function.js"></script>
-  <script>
+  <script type="module">
+    import microlink from './lightweight/index.js'
+
     function getBrowser() {
         var ua=navigator.userAgent,tem,M=ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
         if(/trident/i.test(M[1])){
