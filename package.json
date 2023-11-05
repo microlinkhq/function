@@ -2,7 +2,7 @@
   "name": "@microlink/function",
   "description": "Browser functions as Service. Interacting with browser pages, remotely.",
   "homepage": "https://function.microlink.io",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "types": "lightweight/index.d.ts",
   "exports": {
     "require": "./src/node.js",
