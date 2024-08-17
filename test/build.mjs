@@ -1,11 +1,11 @@
 import { createRequire } from 'module'
-import { $ } from 'execa'
+import $ from 'tinyspawn'
 import test from 'ava'
 
 const pkg = createRequire(import.meta.url)('../package.json')
 
-const evalScript = code => $`node --eval ${code}`
-evalScript.esm = code => $`node --input-type module -e ${code}`
+const evalScript = (code, flags = []) => $('node', ['--eval', code, ...flags]).then(({ stdout }) => stdout)
+evalScript.esm = code => evalScript(code, ['--input-type', 'module'])
 
 test('cjs', async t => {
   // eslint-disable-next-line no-template-curly-in-string
