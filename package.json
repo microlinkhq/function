@@ -62,8 +62,7 @@
     "standard-markdown": "latest",
     "standard-version": "latest",
     "stream-to-promise": "latest",
-    "tsd": "latest",
-    "tsup": "latest"
+    "tsd": "latest"
   },
   "engines": {
     "node": ">= 18"
@@ -74,9 +73,7 @@
     "src/node.js"
   ],
   "scripts": {
-    "build": "npm run build:rollup && npm run build:tsup",
-    "build:rollup": "rollup -c rollup.config.js --bundleConfigAsCjs",
-    "build:tsup": "./node_modules/.bin/tsup --entry.index-bundled lightweight/index.d.ts --dts-only --out-dir lightweight/",
+    "build": "rollup -c rollup.config.js --bundleConfigAsCjs",
     "clean": "rm -rf node_modules",
     "clean:build": "rm -rf lightweight/index.js",
     "contributors": "(npx git-authors-cli && npx finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
