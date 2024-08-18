@@ -4,7 +4,7 @@ import test from 'ava'
 
 const pkg = createRequire(import.meta.url)('../package.json')
 
-const evalScript = (code, flags = []) => $('node', ['--eval', code, ...flags]).then(({ stdout }) => stdout)
+const evalScript = (code, flags = []) => $('node', ['--eval', code, ...flags])
 evalScript.esm = code => evalScript(code, ['--input-type', 'module'])
 
 test('cjs', async t => {
