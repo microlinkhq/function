@@ -10,12 +10,12 @@ clients.forEach(({ constructor: microlink, target }) => {
 
     const myFn = microlink(getTitle)
 
-    const result = await myFn('https://google.com', { force: true })
+    const result = await myFn('https://example.com', { force: true })
 
     t.deepEqual(result, {
       isFulfilled: true,
       isRejected: false,
-      value: 'Google'
+      value: 'Example Domain'
     })
   })
 
@@ -24,7 +24,7 @@ clients.forEach(({ constructor: microlink, target }) => {
 
     const myFn = microlink(getTitle)
 
-    const result = await myFn('https://google.com', { force: true })
+    const result = await myFn('https://example.com', { force: true })
 
     t.deepEqual(result, {
       isFulfilled: true,
@@ -38,7 +38,7 @@ clients.forEach(({ constructor: microlink, target }) => {
 
     const myFn = microlink(getTitle)
 
-    const result = await myFn('https://google.com', {
+    const result = await myFn('https://example.com', {
       greetings: 'hello world',
       force: true
     })
