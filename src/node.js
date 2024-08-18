@@ -21,6 +21,7 @@ const fn = (code, mqlOpts, gotOpts) => {
       {
         function: await compress,
         meta: false,
+        ping: false,
         ...mqlOpts,
         ...opts
       },
