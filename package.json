@@ -46,9 +46,9 @@
     "ava": "latest",
     "c8": "latest",
     "ci-publish": "latest",
-    "github-generate-release": "latest",
     "execa": "latest",
     "git-authors-cli": "latest",
+    "github-generate-release": "latest",
     "nano-staged": "latest",
     "npm-check-updates": "latest",
     "prettier-standard": "latest",
@@ -64,7 +64,7 @@
     "stream-to-promise": "latest",
     "tsd": "latest",
     "tsup": "latest"
-    },
+  },
   "engines": {
     "node": ">= 18"
   },
@@ -76,7 +76,7 @@
   "scripts": {
     "build": "npm run build:rollup && npm run build:tsup",
     "build:rollup": "rollup -c rollup.config.js --bundleConfigAsCjs",
-    "build:tsup": "./node_modules/.bin/tsup --entry.index-bundled lightweight/index.d.ts --dts-only --dts-resolve --out-dir lightweight/",
+    "build:tsup": "./node_modules/.bin/tsup --entry.index-bundled lightweight/index.d.ts --dts-only --out-dir lightweight/",
     "clean": "rm -rf node_modules",
     "clean:build": "rm -rf lightweight/index.js",
     "contributors": "(npx git-authors-cli && npx finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
