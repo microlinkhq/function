@@ -1,7 +1,5 @@
-import ligtweight from '../lightweight/index.js'
-import node from '../src/node.mjs'
+import esm from '../dist/index.js'
 
 export default [
-  { constructor: node, target: 'node' },
-  { constructor: ligtweight, target: 'lightweight' }
+  { constructor: esm, target: 'esm' }
 ]
