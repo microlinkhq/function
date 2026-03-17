@@ -3,12 +3,12 @@
   "description": "Browser functions as Service. Interacting with browser pages, remotely.",
   "homepage": "https://function.microlink.io",
   "version": "0.2.2",
-  "types": "dist/index.d.ts",
+  "types": "src/index.d.ts",
   "exports": {
-    "types": "./dist/index.d.ts",
+    "types": "./src/index.d.ts",
     "require": "./src/index.js",
-    "import": "./src/main.mjs",
-    "default": "./src/main.mjs"
+    "import": "./src/index.mjs",
+    "default": "./src/index.mjs"
   },
   "author": {
     "email": "josefrancisco.verdu@gmail.com",
@@ -59,15 +59,14 @@
     "simple-git-hooks": "latest",
     "standard": "latest",
     "standard-version": "latest",
+    "tinyspawn": "latest",
     "tsd": "latest"
   },
   "engines": {
     "node": ">= 18"
   },
   "files": [
-    "dist",
-    "src/index.js",
-    "src/main.mjs"
+    "src"
   ],
   "scripts": {
     "build": "rollup -c rollup.config.js --bundleConfigAsCjs",
@@ -87,10 +86,6 @@
   },
   "license": "MIT",
   "ava": {
-    "files": [
-      "test/**/*",
-      "!test/clients.mjs"
-    ],
     "timeout": "1m"
   },
   "commitlint": {
@@ -118,7 +113,7 @@
   },
   "standard": {
     "ignore": [
-      "dist/index.js"
+      "dist"
     ]
   },
   "tsd": {
@@ -126,7 +121,7 @@
       "baseUrl": ".",
       "paths": {
         "@microlink/function": [
-          "./dist/index.d.ts"
+          "./src/index.d.ts"
         ]
       }
     },
