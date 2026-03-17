@@ -58,7 +58,6 @@
     "rollup-plugin-visualizer": "latest",
     "simple-git-hooks": "latest",
     "standard": "latest",
-    "standard-markdown": "latest",
     "standard-version": "latest",
     "stream-to-promise": "latest",
     "tsd": "latest"
@@ -109,9 +108,6 @@
     "*.js": [
       "prettier-standard",
       "standard --fix"
-    ],
-    "*.md": [
-      "standard-markdown"
     ],
     "package.json": [
       "finepack"
