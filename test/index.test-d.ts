@@ -1,4 +1,4 @@
-import microlinkFn from '../lightweight'
+import microlinkFn from '@microlink/function'
 
 /** definition */
 

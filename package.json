@@ -3,10 +3,12 @@
   "description": "Browser functions as Service. Interacting with browser pages, remotely.",
   "homepage": "https://function.microlink.io",
   "version": "0.2.2",
-  "types": "lightweight/index.d.ts",
+  "types": "src/index.d.ts",
   "exports": {
-    "require": "./src/node.js",
-    "default": "./lightweight/index.js"
+    "types": "./src/index.d.ts",
+    "require": "./src/index.js",
+    "import": "./src/index.mjs",
+    "default": "./src/index.mjs"
   },
   "author": {
     "email": "josefrancisco.verdu@gmail.com",
@@ -31,8 +33,8 @@
     "serverless"
   ],
   "dependencies": {
-    "@microlink/mql": "~0.14.0",
-    "base64-url": "~2.3.3"
+    "@microlink/mql": "~0.15.1",
+    "lz-ts": "~1.1.2"
   },
   "devDependencies": {
     "@commitlint/cli": "latest",
@@ -54,26 +56,22 @@
     "puppeteer-core": "latest",
     "rollup": "latest",
     "rollup-plugin-filesize": "latest",
-    "rollup-plugin-rewrite": "latest",
-    "rollup-plugin-visualizer": "latest",
     "simple-git-hooks": "latest",
     "standard": "latest",
     "standard-version": "latest",
-    "stream-to-promise": "latest",
+    "tinyspawn": "latest",
     "tsd": "latest"
   },
   "engines": {
     "node": ">= 18"
   },
   "files": [
-    "lightweight",
-    "src/factory.js",
-    "src/node.js"
+    "src"
   ],
   "scripts": {
     "build": "rollup -c rollup.config.js --bundleConfigAsCjs",
     "clean": "rm -rf node_modules",
-    "clean:build": "rm -rf lightweight/index.js",
+    "clean:build": "rm -rf dist/index.js",
     "contributors": "(npx git-authors-cli && npx finepack && git add package.json && git commit -m 'build: contributors' --no-verify) || true",
     "dev": "npm run build -- -w",
     "lint": "standard && tsd",
@@ -88,10 +86,6 @@
   },
   "license": "MIT",
   "ava": {
-    "files": [
-      "test/**/*",
-      "!test/clients.mjs"
-    ],
     "timeout": "1m"
   },
   "commitlint": {
@@ -119,11 +113,18 @@
   },
   "standard": {
     "ignore": [
-      "lightweight/index.js",
-      "src/node.mjs"
+      "dist"
     ]
   },
   "tsd": {
+    "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+        "@microlink/function": [
+          "./src/index.d.ts"
+        ]
+      }
+    },
     "directory": "test"
   }
 }

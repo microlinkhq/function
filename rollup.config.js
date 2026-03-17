@@ -1,5 +1,4 @@
 import nodeResolve from '@rollup/plugin-node-resolve'
-import { visualizer } from 'rollup-plugin-visualizer'
 import commonjs from '@rollup/plugin-commonjs'
 import filesize from 'rollup-plugin-filesize'
 import replace from '@rollup/plugin-replace'
@@ -23,24 +22,22 @@ const build = ({ input, output, plugins = [], compress }) => {
             comments: false
           }
         }),
-      filesize(),
-      visualizer()
-    ]
+      filesize()
+    ].filter(Boolean)
   }
 }
 
 const builds = [
-  /* This build is just for testing using ESM interface */
   build({
-    input: './src/node.js',
-    output: { file: 'src/node.mjs', format: 'es' },
-    plugins: [commonjs()]
-  }),
-  build({
-    compress: true,
-    input: 'src/lightweight.mjs',
-    output: { file: 'lightweight/index.js', format: 'es' },
-    plugins: [nodeResolve()]
+    compress: false,
+    input: 'src/index.js',
+    output: { file: 'dist/index.js', format: 'es' },
+    plugins: [
+      nodeResolve({
+        mainFields: ['browser', 'module', 'main']
+      }),
+      commonjs({ strictRequires: 'auto' })
+    ]
   })
 ]
 
