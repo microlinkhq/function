@@ -33,7 +33,7 @@
     "serverless"
   ],
   "dependencies": {
-    "@microlink/mql": "~0.15.1",
+    "@microlink/mql": "~0.16.0",
     "lz-ts": "~1.1.2"
   },
   "devDependencies": {
