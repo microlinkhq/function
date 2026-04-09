@@ -3,7 +3,7 @@
 import microlink from '@microlink/function'
 import test from 'ava'
 
-const ENDPOINT = 'http://localhost:3000'
+const ENDPOINT = 'https://api.microlink.io'
 
 test('interact with the page', async t => {
   const getTitle = ({ page }) => page.title()
@@ -16,7 +16,7 @@ test('interact with the page', async t => {
   t.is(result.value, 'Example Domain')
 })
 
-test.only('interact with the response', async t => {
+test('interact with the response', async t => {
   const getTitle = ({ response }) => response.status()
 
   const myFn = microlink(getTitle, { endpoint: ENDPOINT })
