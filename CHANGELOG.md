@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.5](https://github.com/microlinkhq/function/compare/v0.2.4...v0.2.5) (2026-05-22)
+
+
+### Features
+
+* profiling ([#40](https://github.com/microlinkhq/function/issues/40)) ([6d0672a](https://github.com/microlinkhq/function/commit/6d0672a8ee7e253c1421d8e9a2558fdcc140c3e2))
+
 ### [0.2.4](https://github.com/microlinkhq/function/compare/v0.2.3...v0.2.4) (2026-04-09)
 
 ### [0.2.3](https://github.com/microlinkhq/function/compare/v0.2.2...v0.2.3) (2026-03-17)
