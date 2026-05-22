@@ -4,39 +4,69 @@ import microlink from '@microlink/function'
 import test from 'ava'
 
 const ENDPOINT = 'https://api.microlink.io'
+const TARGET_URL = 'https://edge-ping.vercel.app'
 
-test('interact with the page', async t => {
-  const getTitle = ({ page }) => page.title()
+test('return a computed value', async t => {
+  const fn = () => 40 + 2
 
-  const myFn = microlink(getTitle, { endpoint: ENDPOINT })
+  const myFn = microlink(fn, { endpoint: ENDPOINT })
 
-  const result = await myFn('https://example.com', { force: true })
+  const result = await myFn(TARGET_URL, { force: true })
 
   t.true(result.isFulfilled)
-  t.is(result.value, 'Example Domain')
+  t.is(result.value, 42)
+  t.truthy(result.profiling)
 })
 
-test('interact with the response', async t => {
-  const getTitle = ({ response }) => response.status()
+test('return a complex value', async t => {
+  const fn = () => ({ title: 'hello', count: 42 })
 
-  const myFn = microlink(getTitle, { endpoint: ENDPOINT })
+  const myFn = microlink(fn, { endpoint: ENDPOINT })
 
-  const result = await myFn('https://example.com', { force: true })
+  const result = await myFn(TARGET_URL, { force: true })
 
   t.true(result.isFulfilled)
-  t.is(result.value, 200)
+  t.deepEqual(result.value, { title: 'hello', count: 42 })
+  t.truthy(result.profiling)
 })
 
 test('interact with user specific parameters', async t => {
-  const getTitle = ({ greetings }) => greetings
+  const getGreetings = ({ greetings }) => greetings
 
-  const myFn = microlink(getTitle, { endpoint: ENDPOINT })
+  const myFn = microlink(getGreetings, { endpoint: ENDPOINT })
 
-  const result = await myFn('https://example.com', {
+  const result = await myFn(TARGET_URL, {
     greetings: 'hello world',
     force: true
   })
 
   t.true(result.isFulfilled)
   t.is(result.value, 'hello world')
+  t.truthy(result.profiling)
+})
+
+test('profiling includes phase timings', async t => {
+  const fn = () => 420
+
+  const myFn = microlink(fn, { endpoint: ENDPOINT })
+
+  const result = await myFn(TARGET_URL, { force: true })
+
+  t.true(result.isFulfilled)
+  t.truthy(result.profiling)
+  t.truthy(result.profiling.phases)
+  t.is(typeof result.profiling.phases.total, 'number')
+})
+
+test('handle execution errors', async t => {
+  const fn = () => { throw new Error('test error') }
+
+  const myFn = microlink(fn, { endpoint: ENDPOINT })
+
+  const result = await myFn(TARGET_URL, { force: true })
+
+  t.false(result.isFulfilled)
+  t.is(result.value.name, 'Error')
+  t.is(result.value.message, 'test error')
+  t.truthy(result.profiling)
 })
