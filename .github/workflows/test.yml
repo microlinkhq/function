@@ -26,3 +26,5 @@ jobs:
         run: pnpm install --dangerously-allow-all-builds
       - name: Test
         run: npm test
+        env:
+          MICROLINK_API_KEY: ${{ secrets.MICROLINK_API_KEY }}
