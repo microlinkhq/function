@@ -1,6 +1,6 @@
 {
   "name": "@microlink/function",
-  "description": "Browser functions as Service. Interacting with browser pages, remotely.",
+  "description": "Write JavaScript functions and run them remotely with Microlink — Puppeteer access, npm packages, and zero infrastructure.",
   "homepage": "https://function.microlink.io",
   "version": "0.2.5",
   "types": "src/index.d.ts",
