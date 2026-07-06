@@ -370,10 +370,6 @@ const result = await fn('https://example.com')
 
 See [authentication](https://microlink.io/docs/api/basics/authentication) for endpoint and quota details.
 
-## Local testing
-
-Use [`@microlink/local`](https://github.com/microlinkhq/local) to execute Microlink Functions locally during development.
-
 ## Examples
 
 See [examples](/examples).
