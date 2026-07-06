@@ -50,4 +50,10 @@ declare function microlinkFunction(
   gotOpts?: object
 ) => Promise<FunctionResponse>
 
+declare namespace microlinkFunction {
+  function compress(code: FunctionInput | string): Promise<string>
+  const mql: typeof import('@microlink/mql').default
+  const version: string
+}
+
 export default microlinkFunction
